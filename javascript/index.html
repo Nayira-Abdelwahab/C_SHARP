@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد النصائح</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        body {
+            background-color: hsl(218, 23%, 16%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0 16px;
+        }
+
+        .card {
+            background-color: hsl(217, 19%, 24%);
+            border-radius: 10px;
+            padding: 40px 24px;
+            text-align: center;
+            max-width: 540px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .advice-id {
+            color: hsl(150, 100%, 66%);
+            font-size: 11px;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            font-weight: 800;
+        }
+
+        .advice-text {
+            color: hsl(193, 38%, 86%);
+            font-size: 24px;
+            margin-bottom: 24px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .divider {
+            margin-bottom: 32px;
+            width: 100%;
+        }
+
+        .divider-mobile {
+            display: block;
+        }
+
+        .divider-desktop {
+            display: none;
+        }
+
+        .dice-button {
+            background-color: hsl(150, 100%, 66%);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            border: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .dice-button:hover {
+            box-shadow: 0 0 20px hsl(150, 100%, 66%);
+        }
+
+        .dice-button:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        @media (min-width: 768px) {
+            .card {
+                padding: 48px 40px;
+            }
+            
+            .advice-id {
+                font-size: 13px;
+            }
+            
+            .advice-text {
+                font-size: 28px;
+                margin-bottom: 40px;
+            }
+            
+            .divider-mobile {
+                display: none;
+            }
+            
+            .divider-desktop {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <p class="advice-id">النصيحة #117</p>
+        <p class="advice-text">"It is easy to sit up and take notice, what's difficult is getting up and taking action."</p>
+        <div class="divider">
+            <svg class="divider-mobile" width="295" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path fill="#4F5D74" d="M0 8h122v1H0zM173 8h122v1H173z"/><g transform="translate(138)" fill="#CEE3E9"><rect width="6" height="16" rx="3"/><rect x="14" width="6" height="16" rx="3"/></g></g></svg>
+            <svg class="divider-desktop" width="444" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path fill="#4F5D74" d="M0 8h196v1H0zM248 8h196v1H248z"/><g transform="translate(212)" fill="#CEE3E9"><rect width="6" height="16" rx="3"/><rect x="14" width="6" height="16" rx="3"/></g></g></svg>
+        </div>
+        <button class="dice-button" id="dice-button">
+            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 0H4a4.005 4.005 0 0 0-4 4v16a4.005 4.005 0 0 0 4 4h16a4.005 4.005 0 0 0 4-4V4a4.005 4.005 0 0 0-4-4ZM7.5 18a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm0-9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm4.5 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm4.5 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm0-9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" fill="#202733"/></svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const adviceIdElement = document.querySelector('.advice-id');
+            const adviceTextElement = document.querySelector('.advice-text');
+            const diceButton = document.getElementById('dice-button');
+            
+            // Fetch initial advice
+            fetchAdvice();
+            
+            // Add event listener to dice button
+            diceButton.addEventListener('click', fetchAdvice);
+            
+            function fetchAdvice() {
+                // Show loading state
+                adviceIdElement.textContent = 'جاري التحميل...';
+                adviceTextElement.textContent = '';
+                
+                // Fetch new advice from API
+                fetch('https://api.adviceslip.com/advice', {
+                    cache: 'no-cache'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update the advice text and ID
+                    adviceIdElement.textContent = `النصيحة #${data.slip.id}`;
+                    adviceTextElement.textContent = `"${data.slip.advice}"`;
+                })
+                .catch(error => {
+                    console.error('Error fetching advice:', error);
+                    adviceIdElement.textContent = 'خطأ';
+                    adviceTextElement.textContent = 'فشل في جلب النصيحة. يرجى المحاولة مرة أخرى.';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
